@@ -1,10 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.views.decorators.http import require_POST
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from taxi.forms import DriverCreationForm, DriverLicenseUpdateForm
+
+from taxi.forms import DriverCreationForm, DriverLicenseUpdateForm, CarForm
 from taxi.models import Driver, Car, Manufacturer
 
 
@@ -65,19 +67,31 @@ class CarDetailView(LoginRequiredMixin, generic.DetailView):
 
 class CarCreateView(LoginRequiredMixin, generic.CreateView):
     model = Car
-    fields = "__all__"
+    form_class = CarForm
     success_url = reverse_lazy("taxi:car-list")
 
 
 class CarUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = Car
-    fields = "__all__"
+    form_class = CarForm
     success_url = reverse_lazy("taxi:car-list")
 
 
 class CarDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = Car
     success_url = reverse_lazy("taxi:car-list")
+
+
+@require_POST
+@login_required(login_url="/accounts/login/")
+def car_assign_driver(request, car_id, driver_id):
+    car = get_object_or_404(Car, pk=car_id)
+    driver = get_object_or_404(Driver, pk=driver_id)
+    if driver in car.drivers.all():
+        car.drivers.remove(driver_id)
+    else:
+        car.drivers.add(driver_id)
+    return redirect(request.META.get("HTTP_REFERER", "/"))
 
 
 class DriverListView(LoginRequiredMixin, generic.ListView):

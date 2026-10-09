@@ -2,7 +2,7 @@
 
 {% block content %}
   <h1>
-    Username: {{ driver.username }}
+    Username: {{ driver.username }} {% if driver == user %} (Me) {% endif %}
     <a href="{% url 'taxi:driver-delete' pk=driver.id %}" class="btn btn-danger link-to-page">
       Delete
     </a>
