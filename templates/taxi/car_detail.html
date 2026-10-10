@@ -13,6 +13,7 @@
   <a href="{% url 'taxi:car-delete' pk=car.id %}" class="btn btn-danger">
       Delete
   </a>
+
   <h1>Drivers</h1>
   <hr>
   <ul>
@@ -36,4 +37,8 @@
                 </button>
             {% endif %}
         </form>
+  <a href="{% url 'taxi:car-list' %}"
+       class="btn btn-secondary" style="margin-top: 6px" >
+       Return
+  </a>
 {% endblock %}
