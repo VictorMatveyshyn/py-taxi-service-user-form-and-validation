@@ -31,7 +31,7 @@
       <p>No cars!</p>
     {% endfor %}
   </div>
-<a href="{% url 'taxi:driver-license-update' pk=driver.id %}" class="btn btn-primary">
+<a href="{% url 'taxi:driver-update' pk=driver.id %}" class="btn btn-primary">
       Update License
     </a>
 {% endblock %}

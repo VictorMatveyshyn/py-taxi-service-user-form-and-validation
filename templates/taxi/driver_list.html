@@ -2,7 +2,7 @@
 
 {% block content %}
     <h1>Driver List
-        <a href="{{ request.META.HTTP_REFERER|default:'/' }}"
+        <a href="{% url 'taxi:driver-list' %}"
         class="btn btn-secondary link-to-page">
         Return
         </a>
