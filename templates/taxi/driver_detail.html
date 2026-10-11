@@ -3,7 +3,7 @@
 {% block content %}
   <h1>
     Username: {{ driver.username }} {% if driver == user %} (Me) {% endif %}
-    <a href="{{ request.META.HTTP_REFERER|default:'/' }}"
+    <a href="{% url 'taxi:driver-list' %}"
        class="btn btn-secondary link-to-page">
        Cancel
     </a>

@@ -1,44 +1,36 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
 
 from taxi.models import Driver, Car
 
 
+def validate_license_format(value):
+    if len(value) == 8:
+        if value[:3].isalpha() and value[:3].isupper():
+            if value[3:].isdigit():
+                return
+    raise ValidationError(
+        "Incorrect license format. "
+        "Must contain 3 uppercase letters and 5 digits."
+    )
+
+
 class DriverCreationForm(UserCreationForm):
+    license_number = forms.CharField(validators=[validate_license_format])
+
     class Meta(UserCreationForm.Meta):
         model = get_user_model()
         fields = UserCreationForm.Meta.fields + ("license_number",)
 
-    def clean_license_number(self):
-        license_number = self.cleaned_data["license_number"]
-        if len(license_number) == 8:
-            if license_number[:3].isalpha() and license_number[:3].isupper():
-                if license_number[3:].isdigit():
-                    return license_number
-        raise ValidationError(
-            "Incorrect license format. "
-            "Must contain 3 uppercase letters and 5 digits."
-        )
-
 
 class DriverLicenseUpdateForm(forms.ModelForm):
+    license_number = forms.CharField(validators=[validate_license_format])
+
     class Meta:
         model = Driver
         fields = ("license_number",)
-
-    def clean_license_number(self):
-        license_number = self.cleaned_data["license_number"]
-        if len(license_number) == 8:
-            if license_number[:3].isalpha() and license_number[:3].isupper():
-                if license_number[3:].isdigit():
-                    return license_number
-        raise ValidationError(
-            "Incorrect license format. "
-            "Must contain 3 uppercase letters and 5 digits."
-        )
 
 
 class CarForm(forms.ModelForm):
